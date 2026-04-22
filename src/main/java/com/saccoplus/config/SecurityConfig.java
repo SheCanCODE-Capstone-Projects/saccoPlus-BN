@@ -35,6 +35,11 @@ public class SecurityConfig {
 
                         // Public routes — no token needed
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/users/register").permitAll()
+                        .requestMatchers("/error").permitAll()
+
+                        // Public routes — no token needed
+                        .requestMatchers("/api/v1/auth/**").permitAll()
 
                         // ADMIN only routes
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
