@@ -13,9 +13,11 @@ C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\sacc
 C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\entity\Wallet.java
 C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\config\CorsConfig.java
 C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\exception\BusinessException.java
+C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\repository\UserRepository.java
 C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\SaccoPlusApplication.java
 C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\security\JwtFilter.java
 C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\dto\response\UserProfileResponse.java
+C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\entity\User.java
 C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\dto\request\RegisterRequest.java
 C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\dto\request\RefreshTokenRequest.java
 C:\Users\Deborah\Downloads\saccoPlus-BN-main\saccoPlus-BN\src\main\java\com\saccoplus\exception\ResourceNotFoundException.java
