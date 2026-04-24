@@ -13,6 +13,5 @@ public class RegisterGroupRequest {
     private String representativeLastName;
     private String representativePhone;
     private String password;
-
     private List<MemberDto> members;
 }
