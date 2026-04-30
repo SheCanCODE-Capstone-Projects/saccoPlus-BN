@@ -1,0 +1,9 @@
+com\saccoplus\dto\request\RegisterRequest.class
+com\saccoplus\dto\response\AuthResponse.class
+com\saccoplus\dto\request\LoginRequest.class
+com\saccoplus\entity\Wallet.class
+com\saccoplus\entity\IndividualUser.class
+com\saccoplus\repository\IndividualUserRepository.class
+com\saccoplus\dto\response\UserProfileResponse.class
+com\saccoplus\service\AuthService.class
+com\saccoplus\entity\Role.class
