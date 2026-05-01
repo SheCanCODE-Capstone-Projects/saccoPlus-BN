@@ -26,7 +26,7 @@ public class IndividualUser {
     private String phone;
 
     @Column(unique = true)
-    private int nationalId;
+    private String nationalId;
 
     private String password;
 
