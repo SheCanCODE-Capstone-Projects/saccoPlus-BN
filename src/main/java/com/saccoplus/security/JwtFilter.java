@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
+    private static final Log logger = LogFactory.getLog(JwtFilter.class);
 
     private final JwtUtils jwtUtils;
 
@@ -41,23 +45,29 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        String username = jwtUtils.extractUsername(token);
-        String role = jwtUtils.extractRole(token);
+        try {
+            String username = jwtUtils.extractUsername(token);
+            String role = jwtUtils.extractRole(token);
 
-        if (username != null && !username.isBlank()
-                && role != null && !role.isBlank()
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null && !username.isBlank()
+                    && role != null && !role.isBlank()
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
 
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                            username, null, List.of(authority));
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                username, null, List.of(authority));
 
-            authToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request));
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request));
 
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+
+        } catch (Exception e) {
+
+            logger.warn("Invalid JWT token: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);
