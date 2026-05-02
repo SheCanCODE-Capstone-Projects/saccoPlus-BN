@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
@@ -16,9 +17,9 @@ public class JwtUtils {
     @Value("${app.jwt.secret}")
     private String SECRET_KEY;
 
-    // Raw bytes directly — no Base64 needed
+
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
     public String extractUsername(String token) {
@@ -29,7 +30,7 @@ public class JwtUtils {
         return extractAllClaims(token).get("role", String.class);
     }
 
-   //    reads expiry date from token
+   //  reads expiry date from token
     public Date extractExpiration(String token) {
         return extractAllClaims(token).getExpiration();
     }
