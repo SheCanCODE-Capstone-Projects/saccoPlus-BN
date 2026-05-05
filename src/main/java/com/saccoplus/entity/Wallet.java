@@ -25,6 +25,6 @@ public class Wallet {
 
     @OneToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id")
-    private IndividualUser IndUser;
+    private IndividualUser indUser;
 
 }

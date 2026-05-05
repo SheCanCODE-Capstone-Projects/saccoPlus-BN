@@ -52,7 +52,7 @@ public class GroupServiceImpl implements GroupService {
         // Create wallet
         Wallet wallet = Wallet.builder()
                 .balance(0.0)
-                .IndUser(representative)
+                .indUser(representative)
                 .build();
 
         walletRepository.save(wallet);

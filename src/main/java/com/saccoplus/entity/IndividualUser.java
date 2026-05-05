@@ -36,7 +36,7 @@ public class IndividualUser {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy = "IndUser", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "indUser", cascade = CascadeType.ALL)
     private Wallet wallet;
 
 
