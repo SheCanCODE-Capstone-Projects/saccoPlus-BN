@@ -1,8 +1,12 @@
 package com.saccoplus.service;
 
+import com.saccoplus.dto.request.DepositRequest;
 import com.saccoplus.dto.request.WithdrawalRequest;
+import com.saccoplus.dto.response.TransactionResponse;
 
 public interface WalletService {
 
-    public void withdraw(WithdrawalRequest request);
+    TransactionResponse withdraw(WithdrawalRequest request);
+
+    TransactionResponse deposit(DepositRequest request);
 }
