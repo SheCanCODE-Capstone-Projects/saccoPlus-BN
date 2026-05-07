@@ -1,18 +1,20 @@
 package com.saccoplus.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
-
-@Entity
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Wallet {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +23,6 @@ public class Wallet {
     private BigDecimal balance = BigDecimal.ZERO;
 
     @OneToOne
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
-    private IndividualUser user;
-
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private IndividualUser IndUser;
 }

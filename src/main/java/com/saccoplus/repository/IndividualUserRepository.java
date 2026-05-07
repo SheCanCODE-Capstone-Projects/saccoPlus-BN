@@ -6,6 +6,6 @@ import com.saccoplus.entity.IndividualUser;
 
 public interface IndividualUserRepository extends JpaRepository<IndividualUser, Long> {
 
-    boolean existsByNationalId(String nationalId);
+    boolean existsByPhone(String phone);
 
 }
