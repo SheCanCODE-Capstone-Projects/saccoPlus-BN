@@ -68,13 +68,22 @@ public class JwtUtils {
         return parseClaims(token).getExpiration();
     }
 
+
     public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        try {
+            return extractExpiration(token).before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return true;
+        }
     }
 
     public boolean isTokenValid(String token, String username) {
-        return extractUsername(token).equals(username)
-                && !isTokenExpired(token);
+        try {
+            return extractUsername(token).equals(username)
+                    && !isTokenExpired(token);
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public boolean validateToken(String token) {
