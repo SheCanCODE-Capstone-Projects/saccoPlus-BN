@@ -1,5 +1,6 @@
 package com.saccoplus.service.impl;
 
+
 import com.saccoplus.entity.IndividualUser;
 import com.saccoplus.entity.PasswordResetToken;
 import com.saccoplus.repository.IndividualUserRepository;
@@ -11,13 +12,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class PasswordResetServiceImpl implements PasswordResetService {
+    private static final Logger logger = LoggerFactory.getLogger(PasswordResetServiceImpl.class);
 
     private final IndividualUserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
@@ -28,11 +31,18 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Transactional
     public void sendResetLink(String email) {
 
-        //  Check if user exists
-        IndividualUser user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("No account found with this email"));
 
-        //  Delete any existing token for this email
+        java.util.Optional<IndividualUser> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            // Don't reveal whether email exists or not
+            logger.info("Password reset requested for unknown email: {}", email);
+            return;
+        }
+
+        IndividualUser user = userOptional.get();
+
+        // Delete any existing token for this email
         tokenRepository.deleteByEmail(email);
 
         //  Generate a unique token
