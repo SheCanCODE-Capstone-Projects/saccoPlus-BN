@@ -27,8 +27,8 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
 
-    @Value("${app.cors.allowed-origins}")  // ← ADD THIS
-    private String allowedOrigins;
+    @Value("${app.cors.allowed-origins}")
+    private List<String> allowedOrigins;
 
     // @Lazy added here to break the circular dependency
     public SecurityConfig(@Lazy JwtFilter jwtFilter) {
@@ -83,7 +83,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
 
-        configuration.setAllowedOrigins(List.of(allowedOrigins));
+        configuration.setAllowedOrigins(allowedOrigins);
 
         // Allow these HTTP methods
         configuration.setAllowedMethods(List.of(
