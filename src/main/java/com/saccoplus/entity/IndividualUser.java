@@ -1,18 +1,10 @@
 package com.saccoplus.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.CascadeType;
 
 @Data
 @Builder
@@ -31,6 +23,9 @@ public class IndividualUser {
     @Column(unique = true)
     private String phone;
 
+    @Column(unique = true)
+    private String nationalId;      // ← YOUR fix: keep this ✅
+
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -38,6 +33,4 @@ public class IndividualUser {
 
     @OneToOne(mappedBy = "IndUser", cascade = CascadeType.ALL)
     private Wallet wallet;
-
-
 }

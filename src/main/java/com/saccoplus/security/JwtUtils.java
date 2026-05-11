@@ -14,18 +14,20 @@ import java.util.Map;
 @Component
 public class JwtUtils {
 
-    @Value("")
+    @Value("${app.jwt.secret}")
     private String jwtSecret;
 
-    @Value("")
+    @Value("${app.jwt.expiration-ms}")
     private long accessTokenExpiryMs;
 
-    @Value("")
+    @Value("${app.jwt.refresh-expiry-ms}")
     private long refreshTokenExpiryMs;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
+
+
 
     public String generateAccessToken(String email, String role) {
         Map<String, Object> claims = new HashMap<>();
@@ -52,12 +54,36 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String extractEmail(String token) {
+
+
+    public String extractUsername(String token) {
         return parseClaims(token).getSubject();
     }
 
     public String extractRole(String token) {
         return (String) parseClaims(token).get("role");
+    }
+
+    public Date extractExpiration(String token) {
+        return parseClaims(token).getExpiration();
+    }
+
+
+    public boolean isTokenExpired(String token) {
+        try {
+            return extractExpiration(token).before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return true;
+        }
+    }
+
+    public boolean isTokenValid(String token, String username) {
+        try {
+            return extractUsername(token).equals(username)
+                    && !isTokenExpired(token);
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public boolean validateToken(String token) {
@@ -68,6 +94,8 @@ public class JwtUtils {
             return false;
         }
     }
+
+
 
     private Claims parseClaims(String token) {
         return Jwts.parser()
