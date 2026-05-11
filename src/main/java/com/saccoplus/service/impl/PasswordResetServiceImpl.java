@@ -10,6 +10,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,6 +25,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public void sendResetLink(String email) {
 
         //  Check if user exists
@@ -64,6 +66,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     }
 
     @Override
+    @Transactional
     public void resetPassword(String token, String newPassword) {
 
         //  Find the token in database
