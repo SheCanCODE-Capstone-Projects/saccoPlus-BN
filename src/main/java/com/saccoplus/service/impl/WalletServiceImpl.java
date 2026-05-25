@@ -16,12 +16,15 @@ import com.saccoplus.service.WalletService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
 
-    private IndividualUserRepository userRepository;
-    private TransactionRepository transactionRepository;
+    // ✅ Fixed: must be final for @RequiredArgsConstructor to inject them
+    private final IndividualUserRepository userRepository;
+    private final TransactionRepository transactionRepository;
 
     @Override
     public TransactionResponse withdraw(WithdrawalRequest request) {
@@ -31,22 +34,21 @@ public class WalletServiceImpl implements WalletService {
 
         Wallet wallet = user.getWallet();
 
-        if (wallet.getBalance() < request.getAmount()) {
+        BigDecimal amount = BigDecimal.valueOf(request.getAmount());
+
+        // ✅ BigDecimal comparison
+        if (wallet.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient balance");
         }
 
-        double updatedBalance = wallet.getBalance() - request.getAmount();
-        wallet.setBalance(updatedBalance);
+        // ✅ BigDecimal subtraction
+        wallet.setBalance(wallet.getBalance().subtract(amount));
 
         Transaction transaction = new Transaction();
         transaction.setAmount(request.getAmount());
         transaction.setType(TransactionType.WITHDRAWAL);
-        transaction.setStatus(TransactionStatus.PENDING);
-        transaction.setUser(user);
-
-        wallet.setBalance(wallet.getBalance() - request.getAmount());
-
         transaction.setStatus(TransactionStatus.COMPLETED);
+        transaction.setUser(user);
 
         transactionRepository.save(transaction);
         userRepository.save(user);
@@ -54,7 +56,7 @@ public class WalletServiceImpl implements WalletService {
         return new TransactionResponse(
                 "Withdrawal successful",
                 request.getAmount(),
-                wallet.getBalance(),
+                wallet.getBalance().doubleValue(),
                 transaction.getStatus());
     }
 
@@ -66,9 +68,10 @@ public class WalletServiceImpl implements WalletService {
 
         Wallet wallet = user.getWallet();
 
-        double updatedBalance = wallet.getBalance() + request.getAmount();
+        BigDecimal amount = BigDecimal.valueOf(request.getAmount());
 
-        wallet.setBalance(updatedBalance);
+
+        wallet.setBalance(wallet.getBalance().add(amount));
 
         Transaction transaction = new Transaction();
         transaction.setAmount(request.getAmount());
@@ -77,11 +80,12 @@ public class WalletServiceImpl implements WalletService {
         transaction.setUser(user);
 
         transactionRepository.save(transaction);
-
         userRepository.save(user);
 
-        return new TransactionResponse("Deposit successful", request.getAmount(), wallet.getBalance(),
+        return new TransactionResponse(
+                "Deposit successful",
+                request.getAmount(),
+                wallet.getBalance().doubleValue(),
                 transaction.getStatus());
     }
-
 }

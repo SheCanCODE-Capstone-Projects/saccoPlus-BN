@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -28,17 +29,14 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public void registerGroup(RegisterGroupRequest request) {
 
-        // Validate members
         if (request.getMembers() == null || request.getMembers().size() < 2) {
             throw new BusinessException("Group requires at least 2 members", HttpStatus.BAD_REQUEST);
         }
 
-        // Check representative phone uniqueness
         if (userRepository.existsByPhone(request.getRepresentativePhone())) {
             throw new BusinessException("Phone already registered", HttpStatus.CONFLICT);
         }
 
-        // Create representative
         IndividualUser representative = IndividualUser.builder()
                 .firstName(request.getRepresentativeFirstName())
                 .lastName(request.getRepresentativeLastName())
@@ -49,15 +47,14 @@ public class GroupServiceImpl implements GroupService {
 
         userRepository.save(representative);
 
-        // Create wallet
+        // ✅ Fixed: BigDecimal.ZERO and lowercase indUser
         Wallet wallet = Wallet.builder()
-                .balance(0.0)
-                .IndUser(representative)
+                .balance(BigDecimal.ZERO)
+                .indUser(representative)
                 .build();
 
         walletRepository.save(wallet);
 
-        // Create group
         Group group = Group.builder()
                 .groupName(request.getGroupName())
                 .representative(representative)
@@ -66,7 +63,6 @@ public class GroupServiceImpl implements GroupService {
 
         groupRepository.save(group);
 
-        // Add representative as member
         groupMemberRepository.save(
                 GroupMember.builder()
                         .group(group)
@@ -75,7 +71,6 @@ public class GroupServiceImpl implements GroupService {
                         .build()
         );
 
-        //Add other members
         for (MemberDto dto : request.getMembers()) {
 
             if (userRepository.existsByPhone(dto.getPhone())) {
