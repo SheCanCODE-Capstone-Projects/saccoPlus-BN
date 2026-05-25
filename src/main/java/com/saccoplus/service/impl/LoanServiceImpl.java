@@ -188,12 +188,12 @@ public class LoanServiceImpl implements LoanService {
 
         BigDecimal repayAmount = BigDecimal.valueOf(request.getAmount());
 
-        // ✅ BigDecimal comparison
+
         if (wallet.getBalance().compareTo(repayAmount) < 0) {
             throw new RuntimeException("Insufficient wallet balance");
         }
 
-        // ✅ BigDecimal subtraction
+
         wallet.setBalance(wallet.getBalance().subtract(repayAmount));
 
         double remaining = loan.getRemainingBalance() - request.getAmount();
