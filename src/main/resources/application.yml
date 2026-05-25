@@ -21,8 +21,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect:    org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+        format_sql: true   # dialect line removed
   mail:
     host:     ${MAIL_HOST:smtp.gmail.com}
     port:     ${MAIL_PORT:587}
@@ -73,12 +72,16 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
-      maximum-pool-size: 20
-      minimum-idle:      5
+      maximum-pool-size:    20
+      minimum-idle:         5
+      connection-timeout:   30000   # ← add: fail fast if DB unreachable
+      idle-timeout:         600000  # ← add: release idle connections
+      max-lifetime:         1800000 # ← add: recycle connections every 30min
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: false
+    open-in-view: false             # ← add: avoid lazy-load anti-pattern
   mail:
     host:     ${MAIL_HOST}
     port:     ${MAIL_PORT}
@@ -90,12 +93,18 @@ spring:
 
 server:
   port: 8080
+  tomcat:
+    threads:
+      max: 200                      # ← add: tune for your container size
 
 management:
   endpoints:
     web:
       exposure:
         include: health
+  endpoint:
+    health:
+      show-details: never           # ← add: don't leak internals in prod
 
 app:
   jwt:
