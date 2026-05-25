@@ -14,13 +14,13 @@ import java.util.Map;
 @Component
 public class JwtUtils {
 
-    @Value("")
+    @Value("${app.jwt.secret}")
     private String jwtSecret;
 
-    @Value("")
+    @Value("${app.jwt.expiration-ms}")
     private long accessTokenExpiryMs;
 
-    @Value("")
+    @Value("${app.jwt.refresh-expiry-ms}")
     private long refreshTokenExpiryMs;
 
     private SecretKey getSigningKey() {
@@ -31,6 +31,7 @@ public class JwtUtils {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
         claims.put("type", "access");
+
         return Jwts.builder()
                 .claims(claims)
                 .subject(email)
@@ -43,6 +44,7 @@ public class JwtUtils {
     public String generateRefreshToken(String email) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("type", "refresh");
+
         return Jwts.builder()
                 .claims(claims)
                 .subject(email)
