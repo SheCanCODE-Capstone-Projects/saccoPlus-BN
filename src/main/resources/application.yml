@@ -13,32 +13,43 @@ spring:
   datasource:
     url:               jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:saccoplus_db}
     username:          ${DB_USERNAME:postgres}
-    password:          ${DB_PASSWORD:changeme}
+    password:          ${DB_PASSWORD:eddy123}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 10000
+      maximum-pool-size:  5
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql:       true
+    open-in-view:   false
     properties:
       hibernate:
-        format_sql: true   # dialect line removed
+        format_sql: true
   mail:
     host:     ${MAIL_HOST:smtp.gmail.com}
     port:     ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_PASSWORD:}
+    username: ${MAIL_USERNAME:therese14niyigena@gmail.com}
+    password: ${MAIL_PASSWORD:rxjn lwoy lzus rcaw}
     properties:
-      mail.smtp.auth:            true
-      mail.smtp.starttls.enable: true
+      mail:
+        smtp:
+          auth:             true                     # ← fixed: proper YAML nesting
+          starttls:
+            enable:         true
+            required:       true                     # ← add: reject non-TLS connections
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8081}
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics                 # ← add: metrics useful in dev
+  endpoint:
+    health:
+      show-details: always                           # ← full details fine in dev
 
 app:
   jwt:
@@ -53,11 +64,14 @@ app:
 logging:
   level:
     com.saccoplus:                DEBUG
-    org.springframework.security: INFO
+    org.springframework.security: DEBUG              # ← DEBUG helpful in dev
+    org.springframework.mail:     DEBUG              # ← add: debug mail issues
+    com.zaxxer.hikari:            DEBUG              # ← add: debug DB pool issues
 
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
+    path:           /swagger-ui.html
+    try-it-out-enabled: true                         # ← add: enable "Try it" in dev
   api-docs:
     path: /v3/api-docs
 
@@ -74,28 +88,43 @@ spring:
     hikari:
       maximum-pool-size:    20
       minimum-idle:         5
-      connection-timeout:   30000   # ← add: fail fast if DB unreachable
-      idle-timeout:         600000  # ← add: release idle connections
-      max-lifetime:         1800000 # ← add: recycle connections every 30min
+      connection-timeout:   30000
+      idle-timeout:         600000
+      max-lifetime:         1800000
+      leak-detection-threshold: 60000               # ← add: detect connection leaks
   jpa:
     hibernate:
-      ddl-auto: validate
-    show-sql: false
-    open-in-view: false             # ← add: avoid lazy-load anti-pattern
+      ddl-auto: update
+    show-sql:     false
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 25                             # ← add: batch inserts/updates
+        order_inserts:  true                         # ← add: pair with batch_size
+        order_updates:  true                         # ← add: pair with batch_size
   mail:
     host:     ${MAIL_HOST}
     port:     ${MAIL_PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
-      mail.smtp.auth:            true
-      mail.smtp.starttls.enable: true
+      mail:
+        smtp:
+          auth:         true
+          starttls:
+            enable:   true
+            required: true
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8081}
   tomcat:
     threads:
-      max: 200                      # ← add: tune for your container size
+      max: 200
+    connection-timeout: 5s                          # ← add: drop slow clients
+  compression:
+    enabled:      true                              # ← add: gzip API responses
+    mime-types:   application/json,application/xml
 
 management:
   endpoints:
@@ -104,7 +133,9 @@ management:
         include: health
   endpoint:
     health:
-      show-details: never           # ← add: don't leak internals in prod
+      show-details: never
+  server:
+    port: 9090                                      # ← add: separate actuator port
 
 app:
   jwt:
@@ -120,3 +151,9 @@ logging:
   level:
     com.saccoplus: INFO
     root:          WARN
+  file:
+    name: /var/log/saccoplus/app.log                # ← add: persist logs in prod
+  logback:
+    rollingpolicy:
+      max-file-size:    50MB
+      max-history:      30                          # ← add: keep 30 days of logs

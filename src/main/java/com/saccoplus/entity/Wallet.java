@@ -20,6 +20,7 @@ public class Wallet {
     private Long id;
 
     @Column(precision = 19, scale = 4)
+    @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
     @OneToOne
