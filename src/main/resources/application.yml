@@ -29,8 +29,8 @@ spring:
   mail:
     host:     ${MAIL_HOST:smtp.gmail.com}
     port:     ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:therese14niyigena@gmail.com}
-    password: ${MAIL_PASSWORD:rxjn lwoy lzus rcaw}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -82,7 +82,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url:      jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url:      ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
