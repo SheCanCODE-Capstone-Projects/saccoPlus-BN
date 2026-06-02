@@ -19,6 +19,7 @@ spring:
       connection-timeout: 10000
       maximum-pool-size:  5
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql:       true
@@ -29,8 +30,8 @@ spring:
   mail:
     host:     ${MAIL_HOST:smtp.gmail.com}
     port:     ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:therese14niyigena@gmail.com}
-    password: ${MAIL_PASSWORD:rxjn lwoy lzus rcaw}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -40,7 +41,7 @@ spring:
             required:       true                     # ← add: reject non-TLS connections
 
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:8080}
 
 management:
   endpoints:
@@ -82,9 +83,10 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url:      jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url:      ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size:    20
       minimum-idle:         5
@@ -93,6 +95,7 @@ spring:
       max-lifetime:         1800000
       leak-detection-threshold: 60000               # ← add: detect connection leaks
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql:     false
@@ -117,7 +120,7 @@ spring:
             required: true
 
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:8080}
   tomcat:
     threads:
       max: 200
